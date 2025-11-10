@@ -32,3 +32,13 @@ Each feature is written in **Gherkin syntax (BDD)** for readability and collabor
 
 ## 📁 Project Structure
 
+---
+
+## ⚙️ Setup Instructions
+
+Follow these steps to clone and run the project locally:
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/Nathisonke/AutomationExercise.git
+cd AutomationExercise
