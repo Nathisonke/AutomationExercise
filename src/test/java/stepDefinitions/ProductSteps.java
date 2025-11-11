@@ -13,6 +13,7 @@ public class ProductSteps {
 
     @Given("user is on the home page")
     public void user_is_on_home_page() {
+
         driver.get("https://automationexercise.com/");
     }
 
@@ -25,6 +26,7 @@ public class ProductSteps {
 
     @When("user enters {string} in the search box")
     public void user_enters_in_the_search_box(String keyword) {
+
         productsPage.enterSearchKeyword(keyword);
     }
 

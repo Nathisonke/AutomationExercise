@@ -23,8 +23,8 @@ import java.util.stream.Stream;
 public class ApplicationHooks {
 
     private static WebDriver driver;
-    
-    //This Static block runs when the class is loaded - before TestRunner plugins are initialized
+
+    // Static block runs once when class is loaded
     static {
         cleanCucumberReports();
     }
@@ -32,7 +32,7 @@ public class ApplicationHooks {
     @Before
     public void setUp() {
         String browserName = System.getProperty("browser", "chrome");
-        
+
         switch (browserName.toLowerCase()) {
             case "chrome":
                 WebDriverManager.chromedriver().setup();
@@ -61,34 +61,31 @@ public class ApplicationHooks {
         if (driver != null) {
             if (scenario.isFailed()) {
                 byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-                scenario.attach(screenshot, "image/png", "Screenshot");
+                scenario.attach(screenshot, "image/png", "Failure Screenshot");
             }
             driver.quit();
             driver = null;
         }
     }
-    
+
     private static void cleanCucumberReports() {
-        try {
-            Path reportsPath = Paths.get("target/cucumber-reports");
-            if (Files.exists(reportsPath)) {
-                try (Stream<Path> pathStream = Files.walk(reportsPath)) {
-                    pathStream
-                        .sorted(Comparator.reverseOrder())
+        Path reportsPath = Paths.get("target", "cucumber-reports");
+        if (Files.exists(reportsPath)) {
+            try (Stream<Path> paths = Files.walk(reportsPath)) {
+                paths.sorted(Comparator.reverseOrder())
                         .forEach(path -> {
                             try {
                                 Files.delete(path);
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                System.out.println("⚠️ Skipped deleting locked file: " + path.getFileName());
                             }
                         });
-                }
+            } catch (IOException e) {
+                System.err.println("Error cleaning Cucumber reports: " + e.getMessage());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
-    
+
     public static WebDriver getDriver() {
         return driver;
     }
